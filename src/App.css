@@ -1,0 +1,80 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+@font-face {
+  font-family: myFirstFont;
+  src: url(./assets/fonts/HandWrite.ttf);
+}
+
+body {
+  height: 100vh;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  font-family: myFirstFont;
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 60px;
+}
+
+.App {
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  gap: 16px;
+}
+
+
+#brindes {
+  padding: 12px 0px;
+  width: 70%;
+  align-self: center;
+  text-align: center;
+}
+
+
+#selecionar {
+  padding: 12px 0px;
+  width: 70%;
+  align-self: center;
+  text-align: center;
+
+  font-size: 16px;
+  cursor: pointer;
+
+  background-color: #24A0ED;
+  color: #FFF;
+  border: 0;
+  border-radius: 4px;
+}
+
+#input-space {
+  width: 70%;
+  align-self: center;
+
+  font-size: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+#input-space > input {
+  padding: 12px 18px;
+  border-radius: 4px;
+}
+
+#input-space > label {
+  font-size: 0.8rem;
+}
