@@ -3,6 +3,7 @@ import { ref, onValue, remove, onChildRemoved, push, set, get, child } from 'fir
 import { db } from './db'
 import Swal from 'sweetalert2'
 import './App.css'
+import arrowIcon from './assets/icons/arrow-right.svg'
 
 function App() {
 
@@ -34,6 +35,10 @@ function App() {
     })
   }, []);
 
+  useEffect(() => {
+    setBrinde('')
+  }, [brindes, selecionados])
+
 
   function Selecionado(e: ChangeEvent<HTMLSelectElement>) {
     setBrinde(e.target.value)
@@ -43,6 +48,7 @@ function App() {
     setNome(e.target.value);
   }
 
+  // Função do botão selecionar
   async function buttonSelecionar() {
     // Termina a função se houver algum campo não preenchido
     if (brinde == '' || nome == '' || brinde == 'select') {
@@ -54,8 +60,9 @@ function App() {
       })
       return
     }
+    // ----------------------------------------------------
 
-    // Configura o brinde selecionado
+    // Mostra um modal para confirmar o brinde selecionado
     const result = await Swal.fire({
       title: 'Tem certeza ?',
       text: `Tem certeza que deseja selecionar: ${brinde}`,
@@ -66,7 +73,9 @@ function App() {
       confirmButtonColor: 'green',
       cancelButtonColor: 'red'
     })
+    // ------------------------------------------------------
 
+    // Termina a função se o usuário selecionar clicar em 'Não' no modal
     if (!result.isConfirmed) return;
 
     // Remove o brinde selecionado das opções do 'Select'
@@ -80,7 +89,7 @@ function App() {
       }
     })
 
-    // Sala as informações de quem salvou o brinde
+    // Salva as informações de quem salvou o brinde
     // Adiciona a pessoa e o item selecionado no banco de dados
     const postListRef = ref(db, 'selecionados');
     const newPostRef = push(postListRef);
@@ -106,14 +115,22 @@ function App() {
 
   return (
     <div className="App">
-      <h1>CHÁ CASA NOVA</h1>
-
+      <h1>CHÁ RIFA COZINHA</h1>
+    
       <select onChange={Selecionado} value={brinde} name="brindes da chá" id="brindes">
         <option value="select">Selecione um brinde</option>
 
         {brindes.map((item, i) => {
+          let myTextNumber;
+
+          if ((i+1) >= 1 && (i+1) <= 9) {
+            myTextNumber = `0${i+1}`
+          } else {
+            myTextNumber = `${i+1}`
+          }
+
           return (
-            <option value={item} key={i}>{item}</option>
+            <option value={item} key={i}>{myTextNumber} {'→'} {item}</option>
           );
         })}
 

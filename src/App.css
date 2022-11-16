@@ -3,12 +3,14 @@
   margin: 0;
   box-sizing: border-box;
 
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-family: 'Open Sans', sans-serif;
+  color: white;
+  background: #212127;
 }
 
 @font-face {
   font-family: myFirstFont;
-  src: url(./assets/fonts/HandWrite.ttf);
+  src: url(./assets/fonts/Besans.ttf);
 }
 
 body {
@@ -18,50 +20,62 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  /* background-image: url('./assets/images/back.png');
+  background-position: center center;
+  background-repeat: no-repeat; */
 }
 
 h1 {
   font-family: myFirstFont;
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 60px;
+  font-size: 1.3rem;
+
+  margin: 50px 60px;
+  letter-spacing: 6px;
+  color: white;
+
 }
 
 .App {
-  width: fit-content;
+  width: fit-content + 200px;
+  width: fit-content + 200px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-
   gap: 16px;
+
+
 }
 
 
 #brindes {
-  padding: 12px 0px;
-  width: 70%;
+  padding: 12px 6px;
+  width: 80%;
   align-self: center;
-  text-align: center;
+  text-align: justify;
 }
 
 
 #selecionar {
   padding: 12px 0px;
-  width: 70%;
+  width: 80%;
   align-self: center;
   text-align: center;
 
   font-size: 16px;
   cursor: pointer;
 
-  background-color: #24A0ED;
-  color: #FFF;
+  background-color: #0f9b6a;
+  color: rgb(243, 233, 233);
   border: 0;
+  font-weight: 700;
   border-radius: 4px;
+
+  margin-top: 30px;
 }
 
 #input-space {
-  width: 70%;
+  width: 80%;
   align-self: center;
 
   font-size: 16px;
@@ -70,11 +84,26 @@ h1 {
   gap: 4px;
 }
 
-#input-space > input {
+#input-space>input {
   padding: 12px 18px;
-  border-radius: 4px;
+  /* border-radius: 4px; */
+
+  text-align: center;
+  border: 0;
+
+  border-bottom: solid #24eda7 2px;
+  font-weight: 600;
+  font-size: 1rem;
 }
 
-#input-space > label {
+
+#input-space>input:focus {
+  border: solid 3px #24eda7;
+  outline: 0;
+  border-radius: 4px;
+  margin: 5px;
+}
+
+#input-space>label {
   font-size: 0.8rem;
 }
