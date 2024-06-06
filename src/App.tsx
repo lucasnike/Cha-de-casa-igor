@@ -1,9 +1,9 @@
 import { ChangeEvent, useEffect, useState, InputHTMLAttributes } from "react";
-import { ref, onValue, push, set } from "firebase/database";
+import { ref, onValue, push, set, remove } from "firebase/database";
 import { db } from "./db";
 import Swal from "sweetalert2";
 import "./App.css";
-import { FaChartArea } from "react-icons/fa";
+import { FaChartArea, FaTrash } from "react-icons/fa";
 
 function App() {
   const [itemId, setItemId] = useState("");
@@ -19,7 +19,6 @@ function App() {
       const data = snapshot.val();
 
       if (snapshot.exists()) {
-        console.log(data);
         setSelecionados(data);
       }
     });
@@ -37,6 +36,8 @@ function App() {
 
     setAvailuableIds(array);
     setItemId("");
+
+    console.log(selecionados);
   }, [selecionados]);
 
   function Selecionado(e: ChangeEvent<HTMLSelectElement>) {
@@ -45,6 +46,24 @@ function App() {
 
   function onInputNameChange(e: ChangeEvent<HTMLInputElement>) {
     setNome(e.target.value);
+  }
+
+  async function deleteSelected(number: number, key: string){
+    const result = await Swal.fire({
+      title: "Tem certeza ?",
+      text: `Tem certeza que deseja deletar o número ${number} ?`,
+      icon: "question",
+      confirmButtonText: "Sim",
+      cancelButtonText: "Não",
+      showCancelButton: true,
+      confirmButtonColor: "green",
+      cancelButtonColor: "red",
+    });
+
+    if (!result.isConfirmed) return;
+
+    const itemRef = ref(db, `selecionados/${key}`);
+    remove(itemRef);
   }
 
   // Função do botão selecionar
@@ -101,14 +120,6 @@ function App() {
     setItemId("");
   }
 
-  async function getSelecionados() {
-    // console.log(selecionados);
-
-    Object.keys(selecionados).forEach((key) => {
-      // console.log(selecionados[key].id);
-    });
-  }
-
   function isInSelecionados(id: number) {
     return Object.keys(selecionados).some((key) => {
       if (selecionados[key].Id == id.toString()) {
@@ -118,34 +129,37 @@ function App() {
   }
 
   return (
-    <div className="App">
-      <h1>CHÁ DE CASA NOVA</h1>
+    <div className="App" style={{width: '100vw', height: '100vh'}}>
+      <div className="container-fluid d-flex justify-content-center mt-5" style={{width: '100vw', height: '100vh'}}>
+        <div className="d-flex flex-column col col-xl-5 " >
+          <h1 className="text-center">SORTEIO</h1>
 
-      <select
-        onChange={Selecionado}
-        value={itemId}
-        name="brindes da chá"
-        id="brindes"
-      >
-        <option value="select">Selecione um brinde</option>
-        {availuableIds.map((i) => {
-          let myTextNumber = `${i}`;
+          <select
+            onChange={Selecionado}
+            value={itemId}
+            name="brindes da chá"
+            id="brindes"
+            className="mb-4"
+          >
+            <option value="select">Selecione um número</option>
+            {availuableIds.map((i) => {
+              let myTextNumber = `${i}`;
 
-          if (i >= 1 && i <= 9) {
-            myTextNumber = `00${i}`;
-          } else if (i >= 10 && i <= 99) {
-            myTextNumber = `0${i}`;
-          } else {
-            myTextNumber = `${i}`;
-          }
-          return (
-            <option value={i} key={i}>
-              {myTextNumber}
-            </option>
-          );
-        })}
+              if (i >= 1 && i <= 9) {
+                myTextNumber = `00${i}`;
+              } else if (i >= 10 && i <= 99) {
+                myTextNumber = `0${i}`;
+              } else {
+                myTextNumber = `${i}`;
+              }
+              return (
+                <option value={i} key={i}>
+                  {myTextNumber}
+                </option>
+              );
+            })}
 
-        {/* {brindes.map((item, i) => {
+            {/* {brindes.map((item, i) => {
           let myTextNumber;
 
           if ((i+1) >= 1 && (i+1) <= 9) {
@@ -158,84 +172,103 @@ function App() {
             <option value={item} key={i}>{myTextNumber} {'→'} {item}</option>
           );
         })} */}
-      </select>
+          </select>
 
-      <div id="input-space">
-        <label htmlFor="nome">Nome:</label>
-        <input
-          onChange={onInputNameChange}
-          value={nome}
-          type="text"
-          name=""
-          id="nome"
-        />
-      </div>
+          <div id="input-space">
+            <label htmlFor="nome">Nome:</label>
+            <input
+              onChange={onInputNameChange}
+              value={nome}
+              type="text"
+              name=""
+              id="nome"
+            />
+          </div>
 
-      <button onClick={buttonSelecionar} id="selecionar">
-        Selecionar
-      </button>
+          <button onClick={buttonSelecionar} id="selecionar">
+            Selecionar
+          </button>
 
-      <div>
-        <button
-          onClick={getSelecionados}
-          id="selecionados"
-          data-bs-toggle="modal"
-          data-bs-target="#detail-modal"
-        >
-          <FaChartArea></FaChartArea>
-        </button>
-      </div>
-
-      <div
-        className="modal fade"
-        id="detail-modal"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabIndex={-1}
-      >
-        <div className="modal-dialog modal-dialog-centered modal-lg">
-          <div className="modal-content">
-            <div
-              className="modal-header"
-              style={{ backgroundColor: "#0f9b6a" }}
+          <div>
+            <button
+              id="selecionados"
+              data-bs-toggle="modal"
+              data-bs-target="#detail-modal"
             >
-              <h2 className="modal-title fs-5" id="staticBackdropLabel">
-                Detalhes do sorteio
-              </h2>
+              <FaChartArea></FaChartArea>
+            </button>
+          </div>
 
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-              ></button>
-            </div>
-            <div className="modal-body bg-dark text-light">
-              <table className="table table-striped table-dark table-hover table-bordered">
-                <thead>
-                  <tr>
-                    <th>Número</th>
-                    <th>Nome</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {Object.keys(selecionados).map((key) => {
-                    let item = selecionados[key];
-                    return <tr>
-                      <td className="col-1">{item.Id}</td>
-                      <td>{item.Name}</td>
-                    </tr>;
-                  })}
-                </tbody>
-              </table>
-            </div>
-            <div className="modal-footer bg-dark">
-              <button
-                type="button"
-                className="btn btn-success"
-                data-bs-dismiss="modal"
-              >
-                Ok
-              </button>
+          <div
+            className="modal fade"
+            id="detail-modal"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            tabIndex={-1}
+          >
+            <div className="modal-dialog modal-dialog-centered modal-lg">
+              <div className="modal-content">
+                <div
+                  className="modal-header"
+                  style={{ backgroundColor: "#0f9b6a" }}
+                >
+                  <h2 className="modal-title fs-5" id="staticBackdropLabel">
+                    Detalhes do sorteio
+                  </h2>
+
+                  <button
+                    type="button"
+                    className="btn-close"
+                    data-bs-dismiss="modal"
+                  ></button>
+                </div>
+                <div className="modal-body bg-dark text-light">
+                  <table className="table table-striped table-dark table-hover table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Número</th>
+                        <th>Nome</th>
+                        <th>Deletar</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Object.keys(selecionados).map((key) => {
+                        let item = selecionados[key];
+                        
+                        if (item.Id == "-1"){
+                          return;
+
+                        }
+                        return (
+                          <tr key={item.Id}>
+                            <td className="col-1 text-center">{item.Id}</td>
+                            <td>{item.Name}</td>
+                            <td className="col-1">
+                              <button
+                                className="btn btn-secondary w-100"
+                                onClick={async () => {
+                                  await deleteSelected(item.Id, key);
+                                }}
+                              >
+                                <FaTrash></FaTrash>
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="modal-footer bg-dark">
+                  <button
+                    type="button"
+                    className="btn btn-success"
+                    data-bs-dismiss="modal"
+                  >
+                    Ok
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
