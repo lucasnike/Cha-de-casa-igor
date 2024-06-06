@@ -7,7 +7,7 @@ import { FaChartArea, FaTrash } from "react-icons/fa";
 
 function App() {
   const [itemId, setItemId] = useState("");
-  const [selecionados, setSelecionados] = useState({});
+  const [selecionados, setSelecionados] = useState<any>({});
   const [nome, setNome] = useState("");
   const [availuableIds, setAvailuableIds] = useState([0]);
 
@@ -234,7 +234,7 @@ function App() {
                     <tbody>
                       {Object.keys(selecionados).map((key) => {
                         let item = selecionados[key];
-                        
+
                         if (item.Id == "-1"){
                           return;
 
